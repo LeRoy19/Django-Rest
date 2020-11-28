@@ -41,7 +41,7 @@ def product_detail(request, pk):
 
 def active_manufacturer_list(request):
     manufacturer = Manufacturer.objects.filter(active=True)
-    data = {"products": list(products.values())}
+    data = {"products": list(manufacturer.values())}
     response = JsonResponse(data)
     return response
 
