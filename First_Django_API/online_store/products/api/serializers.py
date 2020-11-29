@@ -20,7 +20,6 @@ class ManufacturerSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
-        print(validated_data)
         return Manufacturer.objects.create(**validated_data)
 
 

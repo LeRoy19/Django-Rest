@@ -22,7 +22,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include("products.urls"))
+    path('api/', include("products.api.urls")),
 ]
 
 # for media file
