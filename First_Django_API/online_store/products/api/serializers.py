@@ -1,26 +1,86 @@
 from rest_framework import serializers
 from ..models import Manufacturer
+# from datetime import datetime
+# from django.utils import timesince
 
 """
 Serializers are classes that allows rest API to accept and comprehend different kind of requests
 """
 
+class ManufacturerSerializer(serializers.ModelSerializer):
 
-class ManufacturerSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField()
-    location = serializers.CharField()
-    active = serializers.BooleanField()
+    class Meta:
+        model = Manufacturer
+        exclude = ("id",)
+        # fields = "__all__" # all the fields of our model
+        # fiels = ("name", ... ,)
 
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.location = validated_data.get('location', instance.location)
-        instance.active = validated_data.get('active', instance.active)
-        instance.save()
-        return instance
+        # generates an extra field
+        # time_since_publication = serializers.SerializerMethodField()
 
-    def create(self, validated_data):
-        return Manufacturer.objects.create(**validated_data)
+    # def get_time_since_publication(self, object):
+    #     return timesince(object.publication_date, datetime.now())
+
+    def validate(self, data):
+        """
+        Chek that name and location are different
+        :param data: data that must be checked
+        :return: data
+        """
+
+        if data["name"] == data["location"]:
+            raise serializers.ValidationError("Name and Location must be different!")
+        return data
+
+    def validate_name(self, value):
+        """
+        Check that the name is shorter than 101 characters
+        :param value: name that must be checked
+        :return: value
+        """
+
+        if len(value) > 100:
+            raise serializers.ValidationError("The name is longer that 100 characters!")
+        return value
+
+
+# class ManufacturerSerializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only=True)
+#     name = serializers.CharField()
+#     location = serializers.CharField()
+#     active = serializers.BooleanField()
+#
+#     def update(self, instance, validated_data):
+#         instance.name = validated_data.get('name', instance.name)
+#         instance.location = validated_data.get('location', instance.location)
+#         instance.active = validated_data.get('active', instance.active)
+#         instance.save()
+#         return instance
+#
+#     def create(self, validated_data):
+#         return Manufacturer.objects.create(**validated_data)
+#
+#     def validate(self, data):
+#         """
+#         Chek that name and location are different
+#         :param data: data that must be checked
+#         :return: data
+#         """
+#
+#         if data["name"] == data["location"]:
+#             raise serializers.ValidationError("Name and Location must be different!")
+#         return data
+#
+#     def validate_name(self, value):
+#         """
+#         Check that the name is shorter than 101 characters
+#         :param value: name that must be checked
+#         :return: value
+#         """
+#
+#         if len(value) > 100:
+#             raise serializers.ValidationError("The name is longer that 100 characters!")
+#         return value
 
 
 """
